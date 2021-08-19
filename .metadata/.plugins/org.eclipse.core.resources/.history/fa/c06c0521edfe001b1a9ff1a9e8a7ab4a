@@ -1,0 +1,24 @@
+package co.com.store.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import co.com.store.entity.Product;
+import co.com.store.service.IProductService;
+
+@RestController
+@RequestMapping("/products")
+public class ProductController {
+	
+	@Autowired
+	private IProductService productService;
+	
+	public ResponseEntity<List<Product>> listProduct(){
+		List<Product> products = productService.listAllProduct();
+	}
+
+}

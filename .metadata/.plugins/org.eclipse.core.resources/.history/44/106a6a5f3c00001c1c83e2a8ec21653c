@@ -1,0 +1,44 @@
+package co.com.store.controller;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import co.com.store.entity.Category;
+import co.com.store.entity.Product;
+import co.com.store.service.IProductService;
+
+@RestController
+@RequestMapping("/products")
+public class ProductController {
+	
+	@Autowired
+	private IProductService productService;
+	
+	@GetMapping()
+	public ResponseEntity<List<Product>> listProduct(@RequestParam(name = "categoryId", required = false) Long  categoryId){
+		List<Product> products = new ArrayList<>();
+		if(null == categoryId) {
+			products = productService.listAllProduct();
+			if(products.isEmpty()) {
+				return ResponseEntity.noContent().build();
+			}
+		} else {
+			products = productService.findByCategory(Category.builder().id(categoryId).build());
+			if(products.isEmpty()) {
+				return ResponseEntity.notFound().build();
+			}
+		}
+		
+		
+		
+		return ResponseEntity.ok(products);
+	}
+
+}

@@ -1,0 +1,9 @@
+DROP TABLE IF EXISTS tbl_categories;
+DROP TABLE IF EXISTS tbl_products;
+
+CREATE TABLE tbl_categories(
+  id LONG AUTO_INCREMENT  PRIMARY KEY,
+  name VARCHAR(250) NOT NULL
+);
+
+

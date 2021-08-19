@@ -1,0 +1,26 @@
+DROP TABLE IF EXISTS tbl_categories;
+DROP TABLE IF EXISTS tbl_products;
+
+CREATE TABLE tbl_categories(
+  id LONG AUTO_INCREMENT  PRIMARY KEY,
+  name VARCHAR(250) NOT NULL
+);
+
+
+CREATE TABLE tbl_products(
+  id LONG AUTO_INCREMENT  PRIMARY KEY,
+  name VARCHAR(250) NOT NULL,
+  description VARCHAR(250) NOT NULL,
+  stock DOUBLE NOT NULL,
+  price DOUBLE NOT NULL,
+  status VARCHAR(250) NOT NULL,
+  category_id LONG NOT NULL,
+  create_at VARCHAR(250) NOT NULL,
+  foreign key (category_id) references categories(id)  
+);
+
+
+INSERT INTO tbl_categories (id, name) VALUES (1, 'shoes');
+INSERT INTO tbl_categories (id, name) VALUES (2, 'books');
+INSERT INTO tbl_categories (id, name) VALUES (3, 'electronics');
+
