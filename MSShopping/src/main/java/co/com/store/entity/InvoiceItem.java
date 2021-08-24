@@ -4,6 +4,9 @@ import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.Positive;
+
+import co.com.store.model.Product;
+
 import java.io.Serializable;
 
 @Entity
@@ -23,6 +26,9 @@ public class InvoiceItem {
 
 	@Transient
 	private Double subTotal;
+	
+	@Transient
+	private Product product;
 
 	public Double getSubTotal() {
 		if (this.price > 0 && this.quantity > 0) {

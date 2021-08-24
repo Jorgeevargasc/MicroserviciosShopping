@@ -7,6 +7,8 @@ import javax.validation.Valid;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import co.com.store.model.Customer;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -40,6 +42,9 @@ public class Invoice {
 	private List<InvoiceItem> items;
 
 	private String state;
+	
+	@Transient
+    private Customer customer;
 
 	public Invoice() {
 		items = new ArrayList<>();

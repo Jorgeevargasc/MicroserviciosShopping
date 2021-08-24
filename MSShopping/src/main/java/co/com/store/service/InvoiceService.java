@@ -1,11 +1,17 @@
 package co.com.store.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import co.com.store.client.CustomerClient;
+import co.com.store.client.ProductClient;
 import co.com.store.entity.Invoice;
+import co.com.store.entity.InvoiceItem;
+import co.com.store.model.Customer;
+import co.com.store.model.Product;
 import co.com.store.repository.InvoiceItemsRepository;
 import co.com.store.repository.InvoiceRepository;
 
@@ -17,6 +23,12 @@ public class InvoiceService implements IInvoiceService {
 
 	@Autowired
 	InvoiceItemsRepository invoiceItemsRepository;
+	
+	@Autowired
+	CustomerClient customerClient;
+	
+	@Autowired
+	ProductClient productClient;
 
 	@Override
 	public List<Invoice> findInvoiceAll() {
@@ -30,6 +42,10 @@ public class InvoiceService implements IInvoiceService {
 			return invoiceDB;
 		}
 		invoice.setState("CREATED");
+		invoiceDB = invoiceRepository.save(invoice);
+		invoiceDB.getItems().forEach( invoiceItem -> {
+            productClient.updateStockProduct( invoiceItem.getProductId(), invoiceItem.getQuantity() * -1);
+        });
 		return invoiceRepository.save(invoice);
 	}
 
@@ -59,7 +75,18 @@ public class InvoiceService implements IInvoiceService {
 
 	@Override
 	public Invoice getInvoice(Long id) {
-		return invoiceRepository.findById(id).orElse(null);
+		Invoice invoice= invoiceRepository.findById(id).orElse(null);
+        if (null != invoice ){
+            Customer customer = customerClient.getCustomer(invoice.getCustomerId()).getBody();
+            invoice.setCustomer(customer);
+            List<InvoiceItem> listItem=invoice.getItems().stream().map(invoiceItem -> {
+                Product product = productClient.getProduct(invoiceItem.getProductId()).getBody();
+                invoiceItem.setProduct(product);
+                return invoiceItem;
+            }).collect(Collectors.toList());
+            invoice.setItems(listItem);
+        }
+        return invoice ;
 	}
 
 }
